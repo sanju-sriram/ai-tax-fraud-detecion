@@ -249,10 +249,9 @@ tab1, tab2, tab3 = st.tabs(["🚨 High-Risk Queue", "📈 Feature Insights", "�
 
 with tab1:
     st.write("### Priority audit queue")
-    st.dataframe(
+    st.dataframe
         st.dataframe(flagged_df)
         use_container_width=True,
-    )
     if len(flagged_df) > 1:
         plot_graph(scored_df, flagged_df["tax_id"].head(12).tolist())
 
