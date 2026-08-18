@@ -238,9 +238,6 @@ model, iso_model = train_models(feature_matrix, input_df["is_fraud"])
 scored_df = score_dataset(input_df, model, iso_model, feature_matrix)
 scored_df["audit_flag"] = scored_df["fraud_risk_score"] >= risk_threshold
 flagged_df = scored_df[scored_df["audit_flag"]].sort_values(by="fraud_risk_score", ascending=False)
-
-st.subheader("📊 Fraud Detection Dashboard")
-col1, col2, col3, col4 = st.columns(4)
 col1.metric("Total Entities", f"{len(scored_df):,}")
 col2.metric("High-Risk Flags", f"{len(flagged_df):,}")
 col3.metric("Max Risk Score", f"{scored_df['fraud_risk_score'].max():.2%}")
@@ -253,15 +250,7 @@ tab1, tab2, tab3 = st.tabs(["🚨 High-Risk Queue", "📈 Feature Insights", "�
 with tab1:
     st.write("### Priority audit queue")
     st.dataframe(
-        flagged_df[[
-            "tax_id",
-            "fraud_risk_score",
-            "declared_revenue",
-            "bank_deposits",
-            "rev_bank_ratio",
-            "expense_mismatch",
-            "graph_pagerank",
-        ]],
+        st.dataframe(flagged_df)
         use_container_width=True,
     )
     if len(flagged_df) > 1:
@@ -296,7 +285,7 @@ with tab3:
     )
 
     explainer = shap.TreeExplainer(model)
-    shap_values = explainer(feature_matrix)
+    shap_values = explainer(feature_matrix)7
 
     selected_index = scored_df.index[scored_df['tax_id'] == selected_tax_id][0]
     fig_shap, ax_shap = plt.subplots(figsize=(10, 4))
